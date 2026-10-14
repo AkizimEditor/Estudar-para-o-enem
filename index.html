@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enem em Dias</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1c2a6b;--paper:#fbfcff;--line:#d9e2f7;--hl:#ffe14d;--red:#d9484f;--ok:#1d7a4d;--mut:#55608f}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);font:18px/1.6 "Source Serif 4",Georgia,serif;background:var(--paper);background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:28px 28px}
+h1,h2,h3,button,nav a,.tag{font-family:"Bricolage Grotesque",system-ui,sans-serif}
+main{max-width:760px;margin:0 auto;padding:20px 16px 80px;border-left:2px solid var(--red);background:rgba(251,252,255,.92)}
+.hero{padding:28px 0 12px}
+.hero .n{font:800 clamp(88px,22vw,150px)/.9 "Bricolage Grotesque",sans-serif;background:linear-gradient(transparent 62%,var(--hl) 62%);display:inline-block;margin:0}
+.hero p{margin:8px 0}
+nav{position:sticky;top:0;background:var(--paper);display:flex;gap:6px;padding:10px 0;border-bottom:2px solid var(--ink);z-index:5;overflow-x:auto}
+nav a{color:var(--ink);text-decoration:none;font-weight:600;padding:6px 12px;border:2px solid var(--ink);border-radius:8px;white-space:nowrap}
+nav a:hover,nav a:focus-visible{background:var(--hl);outline:none}
+section{padding-top:28px;display:none}section.on{display:block}nav a.on{background:var(--ink);color:#fff}
+h2{font-size:30px;margin:0 0 10px}
+h3{margin:18px 0 6px;font-size:20px}
+details{border:2px solid var(--ink);border-radius:10px;margin:8px 0;background:#fff}
+summary{cursor:pointer;padding:10px 14px;font:600 18px "Bricolage Grotesque",sans-serif}
+details>div{padding:0 16px 12px}
+details ul{margin:6px 0;padding-left:20px}
+button{font-weight:600;font-size:16px;color:var(--ink);background:#fff;border:2px solid var(--ink);border-radius:8px;padding:8px 14px;cursor:pointer}
+button:hover,button:focus-visible{background:var(--hl);outline:none}
+button.on{background:var(--ink);color:#fff}
+.card{min-height:170px;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;border:2px solid var(--ink);border-radius:12px;background:#fff;font-size:21px;cursor:pointer;box-shadow:6px 6px 0 var(--hl)}
+.card.back{background:var(--ink);color:#fff;box-shadow:6px 6px 0 var(--red)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;align-items:center}
+.opt{display:block;width:100%;text-align:left;margin:6px 0;font-weight:400;font-family:inherit}
+.opt.right{background:#d8f3e4;border-color:var(--ok)}
+.opt.wrong{background:#fde0e1;border-color:var(--red)}
+.exp{border-left:4px solid var(--hl);padding:4px 12px;margin:8px 0;background:#fffbe0}
+textarea{width:100%;min-height:340px;font:19px/1.7 "Source Serif 4",serif;color:var(--ink);padding:12px;border:2px solid var(--ink);border-radius:10px;background:#fff}
+select{font:600 16px "Bricolage Grotesque",sans-serif;padding:8px;border:2px solid var(--ink);border-radius:8px;color:var(--ink);background:#fff;max-width:100%}
+.mut{color:var(--mut);font-size:16px}
+.stat{font:600 16px "Bricolage Grotesque",sans-serif}
+a{color:var(--ink)}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<main>
+<header class="hero">
+  <p class="n" id="dias">--</p>
+  <p><b>dias para o Enem.</b> 1º dia: 8 de novembro (Linguagens, Humanas e Redação). 2º dia: 15 de novembro (Natureza e Matemática).</p>
+  <p class="mut">Você não precisa saber tudo. Foque no que mais cai, faça questões todo dia e escreva redações. Cada acerto de questão fácil vale o mesmo que um de questão difícil.</p>
+</header>
+<nav><a href="#estudar">Estudar</a><a href="#cards">Flashcards</a><a href="#questoes">Questões</a><a href="#redacao">Redação</a><a href="#provas">Provas</a></nav>
+
+<section id="estudar">
+<h2>Estudar o básico</h2>
+<p><b>Ordem sugerida:</b> 1) Redação (vale até 1000 pontos), 2) Matemática básica (porcentagem, regra de três, média, probabilidade, gráficos), 3) Linguagens (interpretação de texto), 4) Humanas e Natureza pelos temas que mais caem abaixo.</p>
+<div id="materia"></div>
+</section>
+
+<section id="cards">
+<h2>Flashcards</h2>
+<p class="mut">Toque no cartão para virar. Marque “Sei” ou “Revisar”: os que você revisar voltam ao baralho.</p>
+<div class="row" id="areas"></div>
+<div class="card" id="card" role="button" tabindex="0" aria-live="polite"></div>
+<div class="row"><button id="rev">Revisar</button><button id="sei">Sei</button><span class="stat" id="cstat"></span></div>
+</section>
+
+<section id="questoes">
+<h2>Questões de treino</h2>
+<p class="mut">Questões no estilo Enem, com explicação. Para as provas reais, veja a seção Provas.</p>
+<div id="qbox"></div>
+<div class="row"><button id="qnext">Próxima</button><span class="stat" id="qstat"></span></div>
+</section>
+
+<section id="redacao">
+<h2>Redação</h2>
+<details open><summary>Como a redação é corrigida (5 competências, 200 pontos cada)</summary><div><ul>
+<li><b>C1:</b> norma culta (ortografia, acentos, concordância, pontuação).</li>
+<li><b>C2:</b> entender o tema, usar repertório (dado, lei, filósofo, filme, fato histórico) e escrever dissertativo-argumentativo.</li>
+<li><b>C3:</b> defender um ponto de vista com argumentos organizados.</li>
+<li><b>C4:</b> conectivos entre frases e parágrafos (além disso, portanto, nesse sentido, contudo).</li>
+<li><b>C5:</b> proposta de intervenção completa e que respeite os direitos humanos.</li>
+</ul><p><b>Zera:</b> fugir do tema, fugir do tipo dissertativo, menos de 7 linhas, desrespeitar direitos humanos na proposta, copiar os textos de apoio.</p></div></details>
+<details><summary>Estrutura pronta (4 parágrafos)</summary><div><ul>
+<li><b>Introdução:</b> contexto + repertório + tese (sua opinião sobre o tema).</li>
+<li><b>Desenvolvimento 1:</b> primeiro argumento + explicação + exemplo/dado.</li>
+<li><b>Desenvolvimento 2:</b> segundo argumento, com a mesma lógica.</li>
+<li><b>Conclusão (proposta de intervenção):</b> <b>agente</b> (quem faz: Governo, Ministério da Educação, mídia), <b>ação</b> (o que faz), <b>meio</b> (como: por meio de...), <b>finalidade</b> (para quê) e <b>detalhamento</b> (explicar um desses itens).</li>
+</ul></div></details>
+<h3>Escreva e treine</h3>
+<div class="row"><select id="tema" aria-label="Tema"></select><button id="cron">Iniciar 60 min</button><span class="stat" id="tempo">60:00</span></div>
+<textarea id="txt" placeholder="Escreva sua redação aqui. Ela fica salva neste navegador."></textarea>
+<p class="stat" id="cont"></p>
+<p class="mut">Meta: 25 a 30 linhas (cerca de 300 palavras). Depois de escrever, confira cada competência da lista acima, ou peça a alguém para corrigir.</p>
+</section>
+
+<section id="provas">
+<h2>Provas anteriores</h2>
+<p><b>Como usar o simulado:</b> 1) baixe a prova e o gabarito do INEP (link abaixo), 2) inicie o cronômetro, 3) marque suas respostas no cartão virtual, 4) cole o gabarito e corrija. O tempo real é 5h30 no 1º dia e 5h no 2º dia.</p>
+<p><a href="https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/provas-e-gabaritos" target="_blank" rel="noopener">Provas e gabaritos do Enem (INEP)</a></p>
+<div class="row"><select id="pdia" aria-label="Dia da prova"><option value="0">1º dia: questões 1–90 (Linguagens e Humanas)</option><option value="1">2º dia: questões 91–180 (Natureza e Matemática)</option></select><button id="pcron">Iniciar cronômetro</button><span class="stat" id="ptempo"></span></div>
+<div id="grade"></div>
+<p class="stat" id="pstat"></p>
+<textarea id="gab" style="min-height:80px" placeholder="Cole aqui o gabarito do dia: 90 letras A–E, em ordem"></textarea>
+<div class="row"><button id="corrigir">Corrigir</button><button id="limpar">Limpar cartão</button></div>
+<div id="res"></div>
+<p class="mut">Dica: não tente a prova inteira de uma vez. Comece pelas questões que você consegue resolver, marque as difíceis e volte depois.</p>
+</section>
+</main>
+
+<script>
+const ENEM=new Date(2026,10,8);
+document.getElementById('dias').textContent=Math.max(0,Math.ceil((ENEM-new Date())/864e5));
+
+/* MATERIAL */
+const M={
+"Matemática":[
+["Porcentagem e juros","<ul><li>Desconto de 20%: multiplique por 0,8. Aumento de 15%: multiplique por 1,15.</li><li>Descontos/aumentos seguidos se multiplicam, não se somam.</li><li>Juros simples: J = C·i·t. Juros compostos: M = C·(1+i)^t.</li></ul>"],
+["Razão, proporção e regra de três","<ul><li>Diretamente proporcional: cruze e multiplique (mais produtos, mais preço).</li><li>Inversamente proporcional: mais trabalhadores, menos dias. Multiplique reto.</li><li>Escala: 1:100 000 significa 1 cm no mapa = 1 km real.</li></ul>"],
+["Média, mediana, moda","<ul><li>Média: soma dividida pela quantidade.</li><li>Mediana: valor do meio, com os dados em ordem.</li><li>Moda: valor que mais se repete.</li><li>Valores extremos distorcem a média, mas não a mediana.</li></ul>"],
+["Probabilidade","<ul><li>P = casos favoráveis ÷ casos possíveis.</li><li>Eventos “e” (um depois do outro): multiplica. Eventos “ou”: soma.</li><li>Contagem: fatorial (n!) para filas; combinação para escolher grupos.</li></ul>"],
+["Geometria","<ul><li>Retângulo: b·h. Triângulo: b·h/2. Círculo: π·r².</li><li>Volume do paralelepípedo: a·b·c. Cilindro: π·r²·h.</li><li>Pitágoras: a² = b² + c². Semelhança de triângulos: lados proporcionais.</li><li>1 m³ = 1000 litros.</li></ul>"],
+["Funções e gráficos","<ul><li>1º grau: y = ax + b (a é a taxa de variação, b é o valor inicial). Gráfico é uma reta.</li><li>2º grau: parábola; vértice é o máximo/mínimo.</li><li>Leia eixos, unidades e legendas antes de calcular.</li></ul>"]],
+"Natureza":[
+["Ecologia","<ul><li>Cadeia alimentar: produtor, consumidor, decompositor. Energia diminui a cada nível.</li><li>Ciclos do carbono, nitrogênio e água. Efeito estufa, aquecimento global.</li><li>Desmatamento, eutrofização, bioacumulação, biomas brasileiros, desenvolvimento sustentável.</li></ul>"],
+["Genética e evolução","<ul><li>1ª lei de Mendel: Aa × Aa dá 25% AA, 50% Aa, 25% aa.</li><li>Dominante x recessivo; heredogramas.</li><li>Seleção natural (Darwin): sobrevivem os mais adaptados e deixam descendentes.</li><li>DNA, RNA, mutação, transgênicos.</li></ul>"],
+["Saúde e corpo humano","<ul><li>Vacinas (imunização ativa) x soro (imunização passiva).</li><li>Doenças por vírus (dengue, gripe), bactérias (tuberculose), protozoários (malária) e saneamento básico.</li><li>Fotossíntese e respiração celular.</li></ul>"],
+["Química","<ul><li>pH: menor que 7 é ácido, 7 é neutro, maior que 7 é básico. Cada unidade é 10× mais H⁺.</li><li>Concentração: C = massa ÷ volume.</li><li>Misturas e separações (filtração, decantação, destilação). Balanceamento de reações. Funções orgânicas: álcool, ácido carboxílico, éster. Combustíveis e poluição.</li></ul>"],
+["Física","<ul><li>Velocidade média = distância ÷ tempo. km/h ÷ 3,6 = m/s.</li><li>Energia elétrica (kWh) = potência (kW) × tempo (h). Potência P = U·i.</li><li>Calor: condução, convecção e irradiação. Ondas: som precisa de meio, luz não.</li><li>Leis de Newton: F = m·a. Densidade = massa ÷ volume.</li></ul>"]],
+"Humanas":[
+["História do Brasil","<ul><li>República Velha: café com leite, coronelismo e voto de cabresto.</li><li>Era Vargas (1930–45): CLT, voto feminino, industrialização, Estado Novo.</li><li>Ditadura militar (1964–85): AI-5, censura, redemocratização, Constituição de 1988.</li><li>Escravidão, abolição e seus efeitos no racismo estrutural.</li></ul>"],
+["História geral","<ul><li>Iluminismo (razão, direitos) e Revolução Francesa.</li><li>Revolução Industrial: trabalho fabril e urbanização.</li><li>Guerras Mundiais, Guerra Fria, nazifascismo e Holocausto.</li><li>Colonialismo e imperialismo.</li></ul>"],
+["Geografia","<ul><li>Urbanização desordenada, favelas e mobilidade urbana.</li><li>Globalização, blocos econômicos e cadeias produtivas.</li><li>Questão ambiental: clima, água, agronegócio, Amazônia, Caatinga e seca no Nordeste.</li><li>Leitura de mapas, gráficos e pirâmide etária.</li></ul>"],
+["Filosofia e Sociologia","<ul><li>Cultura, diversidade e preconceito. Cidadania, direitos humanos e democracia.</li><li>Estado, poder, ideologia. Indústria cultural e consumo.</li><li>Trabalho (Marx), fato social (Durkheim), ética e política (Aristóteles, Maquiavel, Hobbes, Locke, Rousseau).</li></ul>"]],
+"Linguagens":[
+["Interpretação de texto","<ul><li>Leia a pergunta primeiro, depois o texto.</li><li>Procure: tema, tese do autor, público, objetivo e tom (ironia, crítica, humor).</li><li>Elimine alternativas que usam palavras como “sempre”, “nunca” e “apenas”, ou que trazem informação que o texto não diz.</li></ul>"],
+["Funções e figuras de linguagem","<ul><li>Referencial (informar), emotiva (sentimento), conativa (convencer o leitor), poética, fática (contato), metalinguística (explicar a própria língua).</li><li>Metáfora, comparação, ironia, hipérbole, personificação, antítese.</li></ul>"],
+["Variação linguística e gêneros","<ul><li>Variação social, regional e situacional: nenhuma é “errada”, o preconceito linguístico é o problema.</li><li>Gêneros: notícia, crônica, charge, propaganda, artigo de opinião. Charge e tirinha pedem leitura crítica da imagem junto com o texto.</li></ul>"],
+["Arte e literatura","<ul><li>Modernismo (1922): ruptura, linguagem coloquial, identidade brasileira (Oswald, Mário, Drummond, Guimarães Rosa).</li><li>Romantismo, Realismo (Machado de Assis), Barroco. Cultura popular e arte contemporânea.</li></ul>"]]};
+const mat=document.getElementById('materia');
+const mt=document.createElement('div');mt.className='row';mat.before(mt);
+function showMat(a){mt.innerHTML=Object.keys(M).map(k=>'<button class="'+(k==a?'on':'')+'" data-a="'+k+'">'+k+'</button>').join('');mat.innerHTML=M[a].map(t=>'<details><summary>'+t[0]+'</summary><div>'+t[1]+'</div></details>').join('')}
+mt.onclick=e=>{if(e.target.dataset.a)showMat(e.target.dataset.a)};showMat("Matemática");
+
+/* FLASHCARDS */
+const F={
+"Matemática":[["Como aplicar desconto de 30%?","Multiplicar por 0,7"],["Regra de três inversa: 4 pedreiros fazem em 6 dias. E 3?","Multiplica reto: 4×6÷3 = 8 dias"],["Probabilidade, fórmula","Casos favoráveis ÷ casos possíveis"],["Qual medida resiste a valores extremos?","A mediana"],["Área do triângulo","base × altura ÷ 2"],["1 m³ equivale a quantos litros?","1000 litros"],["Juros compostos, fórmula","M = C·(1+i)^t"],["Equação do 1º grau no gráfico","Reta: y = ax + b"]],
+"Natureza":[["pH 3 e pH 6: qual é mais ácido?","pH 3, com 1000× mais H⁺"],["Aa × Aa: chance de aa?","25%"],["Vacina x soro","Vacina estimula o corpo a produzir defesa. Soro entrega anticorpos prontos"],["Energia elétrica (kWh)","Potência (kW) × tempo (h)"],["km/h para m/s","Divide por 3,6"],["Eutrofização","Excesso de nutrientes na água, algas em excesso e falta de oxigênio"],["Efeito estufa: gases principais","CO₂ e metano (CH₄)"],["Calor: 3 formas de propagação","Condução, convecção, irradiação"]],
+"Humanas":[["Era Vargas: marcos","CLT (1943), voto feminino, Estado Novo, industrialização"],["AI-5","1968: endureceu a ditadura e ampliou a censura"],["Constituição de 1988","A “Constituição Cidadã”: direitos e democracia"],["Iluminismo","Razão, liberdade e direitos individuais contra o absolutismo"],["Revolução Industrial","Mecanização, trabalho fabril, urbanização e capitalismo industrial"],["Coronelismo","Poder local dos grandes proprietários e voto de cabresto"],["Indústria cultural","Cultura produzida em massa para o consumo"],["Urbanização desordenada","Cidade cresce sem planejamento: favelas, trânsito, falta de saneamento"]],
+"Linguagens":[["Função conativa","Foco no receptor: convencer (“Compre agora!”)"],["Função referencial","Informar de forma objetiva"],["Ironia","Dizer o contrário do que se pensa para criticar"],["Variação linguística","Diferenças de fala por região, classe ou situação. Nenhuma é “errada”"],["Intertextualidade","Um texto dialoga com outro"],["Modernismo (1922)","Semana de Arte Moderna: ruptura e linguagem brasileira"],["Metáfora x comparação","Metáfora liga sem “como”. Comparação usa “como”"],["Gênero charge","Humor e crítica de um fato atual, texto + imagem"]]};
+let area="Matemática",deck=[],i=0,known=0,showA=false;
+const A=document.getElementById('areas'),C=document.getElementById('card'),S=document.getElementById('cstat');
+function load(a){area=a;deck=F[a].map(x=>x).sort(()=>Math.random()-.5);i=0;known=0;showA=false;
+ A.innerHTML=Object.keys(F).map(k=>'<button class="'+(k==a?'on':'')+'" data-a="'+k+'">'+k+'</button>').join('');draw()}
+function draw(){if(!deck.length){C.className='card';C.textContent='Baralho concluído. Escolha outra área ou recomece.';S.textContent='';return}
+ const d=deck[i%deck.length];C.className='card'+(showA?' back':'');C.textContent=showA?d[1]:d[0];S.textContent='Restam '+deck.length+' | Sabidos '+known}
+A.onclick=e=>{if(e.target.dataset.a)load(e.target.dataset.a)};
+C.onclick=()=>{showA=!showA;draw()};
+C.onkeydown=e=>{if(e.key==' '||e.key=='Enter'){e.preventDefault();C.click()}};
+document.getElementById('sei').onclick=()=>{if(!deck.length)return;deck.splice(i%deck.length,1);known++;showA=false;draw()};
+document.getElementById('rev').onclick=()=>{if(!deck.length)return;i++;showA=false;draw()};
+load(area);
+
+/* QUESTÕES */
+const Q=[
+["Um produto de R$ 200 recebe desconto de 15% e, depois, mais 10% sobre o novo preço. Qual é o preço final?",["R$ 150,00","R$ 153,00","R$ 155,00","R$ 160,00"],1,"200 × 0,85 = 170. Depois 170 × 0,90 = 153. Descontos seguidos se multiplicam."],
+["Um chuveiro de 5000 W é usado 30 min por dia durante 30 dias. Com o kWh a R$ 0,80, qual é o custo no mês?",["R$ 30,00","R$ 45,00","R$ 60,00","R$ 75,00"],2,"5 kW × 0,5 h × 30 = 75 kWh. 75 × 0,80 = R$ 60,00."],
+["Em um grupo, as idades são 2, 3, 3, 5 e 12. Qual medida representa melhor o grupo, sem ser distorcida pelo valor 12?",["Média","Mediana","Amplitude","Soma"],1,"A média (5) é puxada pelo 12. A mediana (3) não é."],
+["Uma urna tem 3 bolas vermelhas e 7 azuis. Qual é a probabilidade de sortear uma vermelha?",["3%","7%","30%","70%"],2,"3 favoráveis em 10 possíveis = 3/10 = 30%."],
+["Quatro pedreiros constroem um muro em 6 dias. Com 3 pedreiros, no mesmo ritmo, quantos dias levam?",["4,5","6","8","9"],2,"Grandezas inversas: 4 × 6 ÷ 3 = 8 dias."],
+["Se um predador de topo de uma cadeia alimentar é eliminado, o que tende a ocorrer?",["Diminuição das presas","Aumento das presas e desequilíbrio","Nada muda","Aumento dos produtores"],1,"Sem o predador, as presas crescem demais e consomem mais recursos, desequilibrando o ecossistema."],
+["Dois indivíduos Aa se cruzam. Qual é a probabilidade de nascer um descendente aa?",["0%","25%","50%","75%"],1,"Aa × Aa: AA 25%, Aa 50%, aa 25%."],
+["Uma solução com pH 3, comparada a outra com pH 6, é:",["3 vezes mais ácida","1000 vezes mais ácida","3 vezes mais básica","igualmente ácida"],1,"Cada unidade de pH muda 10×. Três unidades de diferença são 10³ = 1000."],
+["Qual conjunto de medidas marca a Era Vargas?",["Lei Áurea e Proclamação da República","CLT, voto feminino e Estado Novo","AI-5 e censura","Plano Real e Constituição de 1988"],1,"A CLT (1943), o voto feminino (1932) e o Estado Novo (1937) são do período Vargas."],
+["“Compre agora e ganhe 50% de desconto!” Qual função da linguagem predomina?",["Poética","Referencial","Conativa","Metalinguística"],2,"O foco é convencer o leitor a agir: função conativa."]];
+let qi=Math.floor(Math.random()*Q.length),qs=0,qn=0;const QB=document.getElementById('qbox'),QS=document.getElementById('qstat');
+function qdraw(){const q=Q[qi];QB.innerHTML='<p><b>'+q[0]+'</b></p>'+q[1].map((o,k)=>'<button class="opt" data-k="'+k+'">'+'ABCD'[k]+') '+o+'</button>').join('')+'<div id="ex"></div>';QS.textContent='Acertos '+qs+' de '+qn}
+QB.onclick=e=>{const b=e.target.closest('.opt');if(!b||QB.dataset.done==qi+'')return;QB.dataset.done=qi;const q=Q[qi],k=+b.dataset.k;qn++;if(k==q[2])qs++;
+ QB.querySelectorAll('.opt').forEach((x,j)=>{if(j==q[2])x.classList.add('right');else if(j==k)x.classList.add('wrong')});
+ document.getElementById('ex').innerHTML='<div class="exp">'+q[3]+'</div>';QS.textContent='Acertos '+qs+' de '+qn};
+document.getElementById('qnext').onclick=()=>{qi=(qi+1)%Q.length;qdraw()};qdraw();
+
+/* REDAÇÃO */
+const T=["Desafios para combater a desinformação nas redes sociais no Brasil","Impactos do vício em apostas online na vida dos brasileiros","Cuidados com a saúde mental dos jovens na era digital","Invisibilidade do trabalho de cuidado exercido pelas mulheres","Desigualdade no acesso à água potável no Brasil","Barreiras para a inclusão digital na educação pública","Envelhecimento da população e seus desafios sociais","Formas de combater a violência contra a mulher no Brasil"];
+const sel=document.getElementById('tema'),tx=document.getElementById('txt'),ct=document.getElementById('cont');
+sel.innerHTML=T.map((t,k)=>'<option value="'+k+'">'+t+'</option>').join('');
+const key=()=>'enem_red_'+sel.value;
+function stats(){const w=tx.value.trim()?tx.value.trim().split(/\s+/).length:0;ct.textContent=w+' palavras | cerca de '+Math.round(w/10)+' linhas'}
+function ld(){try{tx.value=localStorage.getItem(key())||''}catch(e){tx.value=''}stats()}
+sel.onchange=ld;
+tx.oninput=()=>{stats();try{localStorage.setItem(key(),tx.value)}catch(e){}};ld();
+let tm=null,left=3600;const tp=document.getElementById('tempo'),cb=document.getElementById('cron');
+cb.onclick=()=>{if(tm){clearInterval(tm);tm=null;cb.textContent='Iniciar 60 min';left=3600;tp.textContent='60:00';return}
+ cb.textContent='Parar';tm=setInterval(()=>{left--;tp.textContent=String(Math.floor(left/60)).padStart(2,'0')+':'+String(left%60).padStart(2,'0');if(left<=0){clearInterval(tm);tm=null;cb.textContent='Iniciar 60 min';left=3600;tp.textContent='Tempo!'}},1000)};
+/* ABAS */
+const secs=[...document.querySelectorAll('section')],links=[...document.querySelectorAll('nav a')];
+function tab(id){if(!secs.some(s=>s.id==id))id='estudar';secs.forEach(s=>s.classList.toggle('on',s.id==id));links.forEach(a=>a.classList.toggle('on',a.getAttribute('href')=='#'+id))}
+links.forEach(a=>a.onclick=e=>{e.preventDefault();tab(a.getAttribute('href').slice(1));window.scrollTo(0,document.querySelector('.hero').offsetHeight)});
+tab(location.hash.slice(1)||'estudar');
+
+/* SIMULADO */
+const pd=document.getElementById('pdia'),gr=document.getElementById('grade'),pt=document.getElementById('ptempo'),pc=document.getElementById('pcron'),gb=document.getElementById('gab'),rs=document.getElementById('res'),ps=document.getElementById('pstat');
+const pk=()=>'enem_sim_'+pd.value;
+const total=()=>pd.value=='0'?19800:18000;
+const fmt=s=>Math.floor(s/3600)+':'+String(Math.floor(s%3600/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+const ans=()=>[...gr.querySelectorAll('select')].map(s=>s.value);
+function ptick(){ps.textContent='Marcadas: '+ans().filter(Boolean).length+' de 90'}
+function pdraw(){let sv=[];try{sv=JSON.parse(localStorage.getItem(pk())||'[]')}catch(e){}
+ gr.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;margin:12px 0';
+ gr.innerHTML=Array.from({length:90},(_,k)=>'<label class="stat">'+(+pd.value*90+k+1)+' <select>'+['','A','B','C','D','E'].map(v=>'<option'+(sv[k]==v?' selected':'')+'>'+v+'</option>').join('')+'</select></label>').join('');
+ ptick();rs.innerHTML=''}
+gr.onchange=()=>{ptick();try{localStorage.setItem(pk(),JSON.stringify(ans()))}catch(e){}};
+let ptm=null,pl=0;
+function stopP(){clearInterval(ptm);ptm=null;pc.textContent='Iniciar cronômetro';pt.textContent=fmt(total())}
+pd.onchange=()=>{stopP();pdraw()};
+pc.onclick=()=>{if(ptm){stopP();return}pl=total();pc.textContent='Parar';ptm=setInterval(()=>{pl--;pt.textContent=fmt(pl);if(pl<=0){stopP();pt.textContent='Tempo!'}},1000)};
+document.getElementById('corrigir').onclick=()=>{const g=(gb.value.toUpperCase().match(/[A-E]/g)||[]);
+ if(g.length!=90){rs.innerHTML='<div class="exp">Encontrei '+g.length+' letras no gabarito e preciso de 90 (A–E, em ordem). Nas questões 1–5 do 1º dia, use só a versão (inglês ou espanhol) que você fez.</div>';return}
+ const a=ans(),off=+pd.value*90,nm=pd.value=='0'?['Linguagens','Humanas']:['Natureza','Matemática'];let h=[0,0],er=[];
+ a.forEach((v,k)=>{if(v==g[k])h[k<45?0:1]++;else er.push((off+k+1)+' (certa: '+g[k]+')')});
+ rs.innerHTML='<div class="exp"><b>'+nm[0]+':</b> '+h[0]+'/45 | <b>'+nm[1]+':</b> '+h[1]+'/45 | <b>Total:</b> '+(h[0]+h[1])+'/90</div><p class="mut">Revise estas: '+er.join(', ')+'</p>'};
+document.getElementById('limpar').onclick=()=>{try{localStorage.removeItem(pk())}catch(e){}pdraw()};
+stopP();pdraw();
+</script>
+</body>
+</html>
